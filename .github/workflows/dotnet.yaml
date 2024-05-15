@@ -14,21 +14,20 @@ jobs:
       - name: Build & Deploy
         env:
             PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
-            HOSTNAME: ${{secrets.SSH_HOST}}
-            USER_NAME: ${{secrets.USER_NAME}}
+            HOSTNAME: ${{ secrets.SSH_HOST }}
+            USER_NAME: ${{ secrets.USER_NAME }}
       
         run: |
           echo "$PRIVATE_KEY" > private_key && chmod 600 private_key
-          ssh -o StrictHostKeyChecking=no -i private_key ${USER_NAME}@${HOSTNAME}
-          script: |
-              
-              cd dotnet &&
-              git checkout master &&
-              git fetch --all &&
-              git reset --hard origin/master &&
-              git pull origin master &&
-              dotnet restore &&
-              dotnet build --configuration Release --no-restore &&
-              dotnet publish -c Release -o /var/www/html &&
-              cd /var/www/html &&
-              dotnet EmployeeManagement.dll
+          ssh -o StrictHostKeyChecking=no -i private_key ${USER_NAME}@${HOSTNAME} 'bash -s' << 'ENDSSH'
+          cd dotnet &&
+          git checkout master &&
+          git fetch --all &&
+          git reset --hard origin/master &&
+          git pull origin master &&
+          dotnet restore &&
+          dotnet build --configuration Release --no-restore &&
+          dotnet publish -c Release -o /var/www/html &&
+          cd /var/www/html &&
+          dotnet EmployeeManagement.dll
+          ENDSSH

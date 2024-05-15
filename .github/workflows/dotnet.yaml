@@ -22,7 +22,7 @@ jobs:
           ssh -o StrictHostKeyChecking=no -i private_key ${USER_NAME}@${HOSTNAME}
 
               
-              cd /home/ubuntu/dotnet &&
+              cd dotnet &&
               git checkout master &&
               git fetch --all &&
               git reset --hard origin/master &&
